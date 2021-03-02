@@ -46,7 +46,7 @@ def checkout():
           'git_clone':env.git_clone,
           'current_release':env.current_release,
           'git_branch':env.git_branch })
-    run("cd %(releases_path)s; virtualenv %(releases_path)s/env; source env/bin/activate; pip install -r requirements_pip.txt"% \
+    run("cd %(releases_path)s; virtualenv %(releases_path)s/env; source env/bin/activate; pip install -r requirements_dev.txt"% \
         { 'releases_path':env.releases_path,
           'git_clone':env.git_clone,
           'current_release':env.current_release,
