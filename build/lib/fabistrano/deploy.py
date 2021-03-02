@@ -15,14 +15,9 @@ def sudo_run(*args, **kwargs):
 def restart():
     """Restarts your application"""
     try:
-        run("touch %(current_release)s/%(wsgi_path)s" % \
-                { 'current_release': env.current_release,
-                  'wsgi_path': env.wsgi_path })
+        sudo_run(env.restart_cmd)
     except AttributeError:
-        try:
-            sudo_run(env.restart_cmd)
-        except AttributeError:
-            pass
+        pass
 
 @with_defaults
 def permissions():
@@ -47,6 +42,16 @@ def checkout():
     from time import time
     env.current_release = "%(releases_path)s/%(time).0f" % { 'releases_path':env.releases_path, 'time':time() }
     run("cd %(releases_path)s; git clone -b %(git_branch)s -q %(git_clone)s %(current_release)s" % \
+        { 'releases_path':env.releases_path,
+          'git_clone':env.git_clone,
+          'current_release':env.current_release,
+          'git_branch':env.git_branch })
+    run("cd %(releases_path)s; virtualenv %(releases_path)s/env; source env/bin/activate; pip install -r requirements_pip.txt"% \
+        { 'releases_path':env.releases_path,
+          'git_clone':env.git_clone,
+          'current_release':env.current_release,
+          'git_branch':env.git_branch })
+    put(".flaskenv", "%(releases_path)s" % \
         { 'releases_path':env.releases_path,
           'git_clone':env.git_clone,
           'current_release':env.current_release,
